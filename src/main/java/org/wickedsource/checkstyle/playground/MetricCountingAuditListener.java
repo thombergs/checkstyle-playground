@@ -2,6 +2,7 @@ package org.wickedsource.checkstyle.playground;
 
 import com.puppycrawl.tools.checkstyle.api.AuditEvent;
 import com.puppycrawl.tools.checkstyle.api.AuditListener;
+import com.puppycrawl.tools.checkstyle.api.SeverityLevel;
 
 import java.util.*;
 
@@ -30,13 +31,15 @@ public class MetricCountingAuditListener implements AuditListener {
     }
 
     public void addError(AuditEvent event) {
-        String metricName = event.getSourceName();
-        Integer count = this.metricCounts.get(metricName);
-        if(count == null){
-            count = 0;
+        if(event.getSeverityLevel() != SeverityLevel.IGNORE) {
+            String metricName = event.getSourceName();
+            Integer count = this.metricCounts.get(metricName);
+            if (count == null) {
+                count = 0;
+            }
+            this.metricCounts.put(metricName, count + 1);
+            System.out.println(metricName);
         }
-        this.metricCounts.put(metricName, count+1);
-        System.out.println(metricName);
     }
 
     public void addException(AuditEvent auditEvent, Throwable throwable) {
